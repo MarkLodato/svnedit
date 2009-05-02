@@ -10,6 +10,12 @@ sub process_author {
 }
 
 
+if (@ARGV != 0) {
+    print STDERR "USAGE: $0 < svn.dump > svn-updated.dump\n";
+    exit 1;
+}
+
+
 # First line must be the SVN dump header
 $_ = <STDIN>;
 if (not /^SVN-fs-dump-format-version:/) {
@@ -18,7 +24,7 @@ if (not /^SVN-fs-dump-format-version:/) {
 print;
 
 # From now on, we only process revision nodes.
-while (<>) {
+while (<STDIN>) {
     print;
     if (/^Revision-number: (\d+)$/) {
         # Read the header, extracting the property length and the
@@ -26,7 +32,7 @@ while (<>) {
         my $header = '';
         my $props;
         my ($proplen, $contentlen);
-        while (<>) {
+        while (<STDIN>) {
             $header .= $_;
             last if /^$/;
             $contentlen = $1 if /^Content-length: (\d+)$/;
@@ -63,7 +69,7 @@ while (<>) {
     elsif (not /^$/) {
         # Non-revision: Read the content length then skip over the content.
         my $contentlen = 0;
-        while (<>) {
+        while (<STDIN>) {
             print;
             last if /^$/;
             $contentlen = $1 if /^Content-length: (\d+)$/;
