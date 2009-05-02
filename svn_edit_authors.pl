@@ -14,7 +14,7 @@ svn_edit_authors.pl < svn.dump > svn-updated.dump
 =head1 DESCRIPTION
 
 This script filters the authors in a Subversion dumpfile through a custom
-function.  To use this script, edit the `process_author' subroutine to modify
+function.  To use this script, edit the C<process_author> subroutine to modify
 the authors as necessary.
 
 =head2 Example
