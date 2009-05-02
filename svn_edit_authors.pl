@@ -1,0 +1,75 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+
+sub process_author {
+    $_ = shift;
+    s/Administrator/admin/;
+    return $_;
+}
+
+
+# First line must be the SVN dump header
+$_ = <STDIN>;
+if (not /^SVN-fs-dump-format-version:/) {
+    die "unrecognized file format\n";
+}
+print;
+
+# From now on, we only process revision nodes.
+while (<>) {
+    print;
+    if (/^Revision-number: (\d+)$/) {
+        # Read the header, extracting the property length and the
+        # content-length.
+        my $header = '';
+        my $props;
+        my ($proplen, $contentlen);
+        while (<>) {
+            $header .= $_;
+            last if /^$/;
+            $contentlen = $1 if /^Content-length: (\d+)$/;
+            $proplen = $1 if /^Prop-content-length: (\d+)$/;
+        }
+
+        # Read the properties and update the svn:author.
+        read STDIN, $props, $proplen;
+        if ($props =~ /(?:\n|^)K \d+\n(?:svn:)?author\nV \d+\n(.*)\n/) {
+            my $author = &process_author($1);
+            if (defined $author) {
+                my $len = length($author);
+                $props =~ s/((?:\n|^)K \d+\n(?:svn:)?author\nV )\d+\n.*\n/$1$len\n$author\n/;
+            }
+        }
+
+        # Update the lengths.
+        if (length($props) != $proplen) {
+            $contentlen += length($props) - $proplen;
+            $proplen = length($props);
+            $header =~ s/((?:\n|^)Prop-content-length: )\d+\n/$1$proplen\n/;
+            $header =~ s/((?:\n|^)Content-length: )\d+\n/$1$contentlen\n/;
+        }
+
+        # Print the updated header and properties.
+        print $header;
+        print $props;
+
+        # Read the rest of the content and print it.
+        # TODO do not read all at once if too large
+        read STDIN, $_, $contentlen - $proplen;
+        print;
+    }
+    elsif (not /^$/) {
+        # Non-revision: Read the content length then skip over the content.
+        my $contentlen = 0;
+        while (<>) {
+            print;
+            last if /^$/;
+            $contentlen = $1 if /^Content-length: (\d+)$/;
+        }
+        # TODO do not read all at once if too large
+        read STDIN, $_, $contentlen;
+        print;
+    }
+}
