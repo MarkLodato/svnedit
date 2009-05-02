@@ -29,7 +29,7 @@ To replace "Administrator" with "admin", set:
 
 =head1 AUTHOR
 
-Mark Lodato <mjlodat-at-gmail>
+Mark Lodato <lodatom-at-gmail>
 
 =head1 SEE ALSO
 
