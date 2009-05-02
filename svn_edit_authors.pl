@@ -15,8 +15,11 @@ svn_edit_authors.pl < svn.dump > svn-updated.dump
 
 This script filters the authors in a Subversion dumpfile through a custom
 function.  To use this script, edit the `process_author' subroutine to modify
-the authors as necessary.  As an example, to replace "Administrator" with
-"admin", set:
+the authors as necessary.
+
+=head2 Example
+
+To replace "Administrator" with "admin", set:
 
     sub process_author {
         $_ = shift;
