@@ -28,6 +28,7 @@ subroutine to modify the authors as necessary.
 
 
 Example
+-------
 
 To replace "Administrator" with "admin", set:
 
