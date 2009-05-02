@@ -3,11 +3,45 @@
 # Copyright (c) 2009 Mark Lodato
 # See license at bottom of file.
 
+=head1 Name
+
+svn_edit_authors.pl - filter the authors in an SVN dumpfile.
+
+=head1 Synopsis
+
+svn_edit_authors.pl < svn.dump > svn-updated.dump
+
+=head1 Description
+
+This script filters the authors in a Subversion dumpfile through a custom
+function.  To use this script, edit the `process_author' subroutine to modify
+the authors as necessary.  As an example, to replace "Administrator" with
+"admin", set:
+
+    sub process_author {
+        $_ = shift;
+        s/^Administrator$/admin/;
+        return $_;
+    }
+
+=head1 Author
+
+Mark Lodato <mjlodat-at-gmail>
+
+=head1 See Also
+
+svnadmin(1)
+
+=cut
+
 use warnings;
 use strict;
 
+# Number of bytes to read at a time when processing each blob.
 my $BUFSIZ = 4096 * 1024;
 
+# Modify this function to process the usernames as needed.  The input argument
+# will be the username; you must return the modified username.
 sub process_author {
     $_ = shift;
     s/^Administrator$/admin/;
