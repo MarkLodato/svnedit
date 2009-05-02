@@ -79,3 +79,5 @@ while (<STDIN>) {
         print;
     }
 }
+
+__END__
