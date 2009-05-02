@@ -46,7 +46,7 @@ To replace "Administrator" with "admin", set:
 AUTHOR
 ======
 
-Mark Lodato <mjlodat-at-gmail>
+Mark Lodato <lodatom-at-gmail>
 
 
 
