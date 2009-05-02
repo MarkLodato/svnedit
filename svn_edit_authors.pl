@@ -3,6 +3,8 @@
 use warnings;
 use strict;
 
+my $BUFSIZ = 4096 * 1024;
+
 sub process_author {
     $_ = shift;
     s/Administrator/admin/;
@@ -79,8 +81,15 @@ while (<STDIN>) {
 
 sub read_content {
     my $contentlen = shift;
-    read STDIN, $_, $contentlen;
-    print;
+    my $buffer;
+    my $bufsiz = $BUFSIZ;
+    while ($contentlen > 0) {
+        if ($bufsiz > $contentlen) {
+            $bufsiz = $contentlen;
+        }
+        $contentlen -= read STDIN, $buffer, $bufsiz;
+        print $buffer;
+    }
 }
 
 __END__
