@@ -40,6 +40,9 @@ svnadmin(1)
 use warnings;
 use strict;
 
+use Getopt::Long;
+use Pod::Usage;
+
 # Number of bytes to read at a time when processing each blob.
 my $BUFSIZ = 4096 * 1024;
 
@@ -52,10 +55,14 @@ sub process_author {
 }
 
 
-if (@ARGV != 0) {
-    print STDERR "USAGE: $0 < svn.dump > svn-updated.dump\n";
-    exit 1;
-}
+# We don't need any arguments or options, but we might as well allow --help
+# and --man.
+GetOptions(
+    'help|?' => sub { pod2usage(-exitstatus => 0, -verbose => 99,
+            -sections => 'SYNOPSIS|DESCRIPTION'); },
+    'man'    => sub { pod2usage(-exitstatus => 0, -verbose => 2); },
+) or pod2usage(2);
+pod2usage(2) if @ARGV != 0;
 
 
 # First line must be the SVN dump header
