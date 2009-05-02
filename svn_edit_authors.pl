@@ -7,7 +7,7 @@ my $BUFSIZ = 4096 * 1024;
 
 sub process_author {
     $_ = shift;
-    s/Administrator/admin/;
+    s/^Administrator$/admin/;
     return $_;
 }
 
