@@ -62,9 +62,7 @@ while (<STDIN>) {
         print $props;
 
         # Read the rest of the content and print it.
-        # TODO do not read all at once if too large
-        read STDIN, $_, $contentlen - $proplen;
-        print;
+        &read_content($contentlen - $proplen);
     }
     elsif (not /^$/) {
         # Non-revision: Read the content length then skip over the content.
@@ -74,10 +72,15 @@ while (<STDIN>) {
             last if /^$/;
             $contentlen = $1 if /^Content-length: (\d+)$/;
         }
-        # TODO do not read all at once if too large
-        read STDIN, $_, $contentlen;
-        print;
+        &read_content($contentlen);
     }
+}
+
+
+sub read_content {
+    my $contentlen = shift;
+    read STDIN, $_, $contentlen;
+    print;
 }
 
 __END__
